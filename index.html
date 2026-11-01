@@ -32,8 +32,8 @@
   nav .links { display: flex; flex-wrap: wrap; gap: 8px 28px; }
 
   /* HOME */
-  #inicio { height: 100vh; min-height: 640px; overflow: hidden; background: var(--bordo); }
-  #arte { position: absolute; inset: 0; }
+  #inicio { height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; background: var(--bordo); }
+  #arte { position: absolute; inset: 0; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
   #arte canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .ponto { position: absolute; transform: translate(-50%, -22px); display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 44px; background: none; border: 0; padding: 0; cursor: pointer; color: var(--creme-2); font: inherit; }
   .ponto .halo { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; transition: background .3s; }
@@ -67,7 +67,12 @@
     #disco { height: auto; padding: 88px 16px 48px; }
     .disco-grid { grid-template-columns: 1fr; }
     .disco-topo { grid-template-columns: 1fr; }
-    .player { height: 600px; }
+    .player { height: 680px; }
+  }
+  /* tablet em pé: capa e texto lado a lado */
+  @media (min-width: 600px) and (max-width: 900px) {
+    .disco-topo { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+    #disco .capa-box { max-width: none; }
   }
   .pixels span { position: absolute; }
   .duas { display: flex; flex-wrap: wrap; align-items: center; gap: 64px 72px; }
@@ -125,7 +130,12 @@
     .capa-box { padding-right: 14%; }
     .ponto .nome { font-size: 12px; }
     h1 { font-size: 14.5vw; }
-    #duo { height: auto; }
+    #duo { height: auto; padding-top: 88px; padding-bottom: 48px; }
+    #duo .duas { gap: 20px; }
+    #disco .disco-esq { gap: 28px; }
+    #disco .ficha .linha { grid-template-columns: minmax(0, 120px) minmax(0, 1fr); }
+    .home-rodape { bottom: 32px; }
+    .painel { gap: 6px; }
     #duo figure img { height: auto; aspect-ratio: 4 / 3; }
     }
 </style>
@@ -239,17 +249,17 @@
 </div>
 
 <script>
-// ---------- Conteúdo: as faixas do disco (x, y em % da tela) ----------
+// ---------- Conteúdo: as faixas do disco (x, y em % da tela; xm, ym = tela em pé, celular e tablet) ----------
 const FAIXAS = [
-  { n: 1, nome: 'Bolimbolacho',  dur: '5:24', autor: 'Ricardo Cotrim',            x: 18, y: 26, f: 130.81 },
-  { n: 2, nome: 'Canjiquinha',   dur: '3:48', autor: 'Ricardo Cotrim',            x: 34, y: 18, f: 146.83 },
-  { n: 3, nome: 'Genoma',        dur: '4:38', autor: 'Pedro Tie e Ricardo Cotrim', x: 30, y: 44, f: 164.81 },
-  { n: 4, nome: 'Parangolando',  dur: '4:18', autor: 'Ricardo Cotrim',            x: 50, y: 28, f: 196.00 },
-  { n: 5, nome: 'Pão de Açúcar', dur: '4:10', autor: 'Pedro Tie e Ricardo Cotrim', x: 56, y: 50, f: 220.00 },
-  { n: 6, nome: 'Samba a 3',     dur: '5:11', autor: 'Pedro Tie e Ricardo Cotrim', x: 68, y: 20, f: 246.94 },
-  { n: 7, nome: 'Bole Box 1',    dur: '5:49', autor: 'Pedro Tie e Ricardo Cotrim', x: 76, y: 40, f: 261.63 },
-  { n: 8, nome: 'Bole Box 2',    dur: '4:00', autor: 'Ricardo Cotrim e Pedro Tie', x: 88, y: 28, f: 293.66 },
-  { n: 9, nome: 'Simbora',       dur: '5:45', autor: 'Ricardo Cotrim e Pedro Tie', x: 84, y: 54, f: 329.63 }
+  { n: 1, nome: 'Bolimbolacho',  dur: '5:24', autor: 'Ricardo Cotrim',            x: 18, y: 26, xm: 20, ym: 14, f: 130.81 },
+  { n: 2, nome: 'Canjiquinha',   dur: '3:48', autor: 'Ricardo Cotrim',            x: 34, y: 18, xm: 66, ym: 15, f: 146.83 },
+  { n: 3, nome: 'Genoma',        dur: '4:38', autor: 'Pedro Tie e Ricardo Cotrim', x: 30, y: 44, xm: 42, ym: 25, f: 164.81 },
+  { n: 4, nome: 'Parangolando',  dur: '4:18', autor: 'Ricardo Cotrim',            x: 50, y: 28, xm: 80, ym: 29, f: 196.00 },
+  { n: 5, nome: 'Pão de Açúcar', dur: '4:10', autor: 'Pedro Tie e Ricardo Cotrim', x: 56, y: 50, xm: 22, ym: 35, f: 220.00 },
+  { n: 6, nome: 'Samba a 3',     dur: '5:11', autor: 'Pedro Tie e Ricardo Cotrim', x: 68, y: 20, xm: 62, ym: 40, f: 246.94 },
+  { n: 7, nome: 'Bole Box 1',    dur: '5:49', autor: 'Pedro Tie e Ricardo Cotrim', x: 76, y: 40, xm: 34, ym: 48, f: 261.63 },
+  { n: 8, nome: 'Bole Box 2',    dur: '4:00', autor: 'Ricardo Cotrim e Pedro Tie', x: 88, y: 28, xm: 78, ym: 52, f: 293.66 },
+  { n: 9, nome: 'Simbora',       dur: '5:45', autor: 'Ricardo Cotrim e Pedro Tie', x: 84, y: 54, xm: 52, ym: 60, f: 329.63 }
 ];
 
 // ---------- Som ----------
@@ -370,7 +380,6 @@ let atual = 0;
 const botoes = FAIXAS.map((fx, i) => {
   const b = document.createElement('button');
   b.className = 'ponto' + (i === 0 ? ' on' : '');
-  b.style.left = fx.x + '%'; b.style.top = fx.y + '%';
   b.setAttribute('aria-label', `Faixa ${fx.n}: ${fx.nome}. Ir para o disco`);
   b.innerHTML = '<span class="halo"><span class="q"></span></span><span class="nome"></span>';
   b.querySelector('.nome').textContent = fx.nome;
@@ -384,7 +393,13 @@ const botoes = FAIXAS.map((fx, i) => {
   };
   b.addEventListener('mouseenter', escolher);
   b.addEventListener('focus', escolher);
-  b.addEventListener('click', () => { sairDaGrade(); document.getElementById('disco').scrollIntoView(); });
+  // no toque, o primeiro toque escolhe a faixa (como passar o mouse); tocar de novo leva ao disco
+  let tipo = 'mouse', jaAtiva = false;
+  b.addEventListener('pointerdown', e => { tipo = e.pointerType; jaAtiva = atual === i; });
+  b.addEventListener('click', () => {
+    if (tipo !== 'mouse' && !jaAtiva) { escolher(); return; }
+    sairDaGrade(); document.getElementById('disco').scrollIntoView();
+  });
   arte.appendChild(b);
   return b;
 });
@@ -394,7 +409,11 @@ const botoes = FAIXAS.map((fx, i) => {
 const cv = document.getElementById('grade'), g2 = cv.getContext('2d');
 const CEL = 14;                       // tamanho de cada célula da grade, em px
 const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let W = 0, H = 0, cols = 0, rows = 0, rnd = null, soltos = [];
+let W = 0, H = 0, cols = 0, rows = 0, rnd = null, soltos = [], retrato = false;
+// nuvem de pixels e posição das faixas: tela deitada (computador) ou em pé (celular, tablet)
+const NUVEM = { deitada: { cx: .55, cy: .42, rx: .38, ry: .36, fim: .86 }, empe: { cx: .5, cy: .38, rx: .52, ry: .31, fim: .72 } };
+const nuvem = () => retrato ? NUVEM.empe : NUVEM.deitada;
+const px = fx => (retrato ? fx.xm : fx.x) / 100 * W, py = fx => (retrato ? fx.ym : fx.y) / 100 * H;
 const mouse = { x: -1e4, y: -1e4, a: 0, alvo: 0 };
 const ondas = [];
 const t0 = performance.now();
@@ -405,17 +424,22 @@ function medir() {
   cv.width = Math.round(W * d); cv.height = Math.round(H * d);
   g2.setTransform(d, 0, 0, d, 0, 0);
   cols = Math.ceil(W / CEL) + 1; rows = Math.ceil(H / CEL) + 1;
+  retrato = W / H < .8;
+  FAIXAS.forEach((fx, i) => {
+    botoes[i].style.left = (retrato ? fx.xm : fx.x) + '%'; botoes[i].style.top = (retrato ? fx.ym : fx.y) + '%';
+  });
+  const nv = nuvem();
   rnd = new Float32Array(cols * rows).map(() => Math.random());
   // pixels soltos ao redor da nuvem, como os quadrados brancos da capa
   soltos = Array.from({ length: 18 }, () => {
     const ang = Math.random() * Math.PI * 2, raio = 0.95 + Math.random() * 0.45;
     return {
-      x: Math.round((W * .55 + Math.cos(ang) * W * .38 * raio) / CEL) * CEL,
-      y: Math.round((H * .42 + Math.sin(ang) * H * .36 * raio) / CEL) * CEL,
+      x: Math.round((W * nv.cx + Math.cos(ang) * W * nv.rx * raio) / CEL) * CEL,
+      y: Math.round((H * nv.cy + Math.sin(ang) * H * nv.ry * raio) / CEL) * CEL,
       s: Math.random() < .3 ? 2 : 1,
       fase: Math.random() * 6.28
     };
-  }).filter(p => p.y > 70 && p.y < H * .6);
+  }).filter(p => p.y > 80 && p.y < H * (nv.fim - .26) && p.x > 0 && p.x < W - CEL);
 }
 
 // Envelope de volume do loop (depois do filtro): sobe rápido no ataque, desce devagar
@@ -433,14 +457,14 @@ function desenhar() {
   const t = reduz ? 0 : (performance.now() - t0) / 1000;
   mouse.a += (mouse.alvo - mouse.a) * 0.08;
   g2.clearRect(0, 0, W, H);
-  const cx = W * .55, cy = H * .42, rx = W * .38, ry = H * .36;
-  const ativo = FAIXAS[atual], ax = ativo.x / 100 * W, ay = ativo.y / 100 * H;
+  const nv = nuvem(), cx = W * nv.cx, cy = H * nv.cy, rx = W * nv.rx, ry = H * nv.ry;
+  const ativo = FAIXAS[atual], ax = px(ativo), ay = py(ativo);
   for (let i = ondas.length - 1; i >= 0; i--) if (t - ondas[i].t > 2.6) ondas.splice(i, 1);
 
   const creme = new Path2D(), ouro = new Path2D();
   for (let r = 0; r < rows; r++) {
     const y = r * CEL + CEL / 2;
-    const fadeY = Math.min(1, Math.max(0, (H * .86 - y) / (H * .3)));
+    const fadeY = Math.min(1, Math.max(0, (H * nv.fim - y) / (H * .3)));
     for (let c = 0; c < cols; c++) {
       const x = c * CEL + CEL / 2;
       const dx = (x - cx) / rx, dy = (y - cy) / ry;
@@ -483,16 +507,31 @@ new IntersectionObserver(([e]) => { visivel = e.isIntersecting; if (visivel) ped
   .observe(document.getElementById('inicio'));
 const inicio = document.getElementById('inicio');
 // qualquer clique na arte liga o som (os links continuam só navegando)
-inicio.addEventListener('pointerdown', e => {
-  sobreGrade = true;
-  if (vol === 0 && !e.target.closest('a')) aplicarVol(ultimoVol || 70);
-});
-inicio.addEventListener('pointermove', e => {
+// No celular/tablet o loop soa enquanto o dedo está encostado na arte (fora dela a tela rola normalmente).
+const naArte = e => e.pointerType === 'mouse' || !!e.target.closest('#arte');
+function moverPonteiro(e) {
   const r = cv.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
   if (!sobreGrade) { sobreGrade = true; atualizarLoop(); }
   filtrar({ nx: Math.min(1, Math.max(0, mouse.x / W)), ny: Math.min(1, Math.max(0, 1 - mouse.y / H)) });
   mouse.alvo = 1; if (reduz) { mouse.a = 1; pedir(); }
+}
+function soltarDedo(e) {
+  if (e.pointerType === 'mouse') return;
+  mouse.alvo = 0; sairDaGrade(); if (reduz) { mouse.a = 0; pedir(); }
+}
+inicio.addEventListener('pointerdown', e => {
+  if (!naArte(e)) return;
+  if (vol === 0 && !e.target.closest('a')) aplicarVol(ultimoVol || 70);
+  moverPonteiro(e);
 });
+inicio.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse' && !sobreGrade) return;   // dedo só conta depois de encostar na arte
+  moverPonteiro(e);
+});
+inicio.addEventListener('pointerup', soltarDedo);
+inicio.addEventListener('pointercancel', soltarDedo);
+// iPhone/iPad: garante que o áudio destrave no toque
+['touchend', 'click'].forEach(ev => document.addEventListener(ev, () => { if (ac && ac.state !== 'running') ac.resume(); }, { passive: true }));
 function sairDaGrade() { sobreGrade = false; atualizarLoop(); filtrar(null); }
 document.documentElement.addEventListener('mouseleave', sairDaGrade);   // cursor saiu da janela
 window.addEventListener('blur', sairDaGrade);
@@ -501,7 +540,7 @@ inicio.addEventListener('pointerleave', () => { mouse.alvo = 0; sairDaGrade(); i
 window.addEventListener('resize', () => { medir(); pedir(); });
 function onda(i) {
   if (reduz) { pedir(); return; }
-  ondas.push({ x: FAIXAS[i].x / 100 * W, y: FAIXAS[i].y / 100 * H, t: (performance.now() - t0) / 1000 });
+  ondas.push({ x: px(FAIXAS[i]), y: py(FAIXAS[i]), t: (performance.now() - t0) / 1000 });
 }
 botoes.forEach((b, i) => { b.addEventListener('mouseenter', () => onda(i)); b.addEventListener('focus', () => onda(i)); });
 medir(); onda(0); pedir();
