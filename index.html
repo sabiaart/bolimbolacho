@@ -172,7 +172,6 @@
     <div class="painel" aria-live="polite">
       <span class="eyebrow"><span class="pix"></span><span id="p-num">FAIXA 1 · 5:24</span></span>
       <span class="faixa" id="p-nome">Bolimbolacho</span>
-      <span class="info" id="p-autor">Ricardo Cotrim</span>
       <span class="botoes"><a class="btn main" href="#disco">Ouvir o disco <span aria-hidden="true">↓</span></a></span>
     </div>
   </div>
@@ -421,7 +420,6 @@ const botoes = FAIXAS.map((fx, i) => {
     botoes[atual].classList.remove('on'); b.classList.add('on'); atual = i;
     document.getElementById('p-num').textContent = `FAIXA ${fx.n} · ${fx.dur}`;
     document.getElementById('p-nome').textContent = fx.nome;
-    document.getElementById('p-autor').textContent = fx.autor;
     tocar(fx.f);
   };
   b.addEventListener('mouseenter', escolher);
