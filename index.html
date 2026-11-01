@@ -111,7 +111,15 @@
   #contato p { margin: 0; font-size: 21px; max-width: 620px; }
   #contato .btn.main { background: var(--bordo); color: var(--creme); }
   #contato footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 12px; }
-  #contato footer .redes { display: flex; gap: 20px; }
+  /* REDES: onde ouvir e seguir */
+  .redes { display: flex; flex-wrap: wrap; gap: 28px 56px; margin-top: 24px; padding-top: 28px; border-top: 1px solid rgba(36, 22, 26, .25); scroll-margin-top: 88px; }
+  .redes .grupo { display: flex; flex-direction: column; gap: 12px; }
+  .redes .lista { display: flex; flex-wrap: wrap; gap: 8px; }
+  .redes .lista a { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1.5px solid var(--bordo); border-radius: 10px; font-size: 15px; font-weight: 500; }
+  .redes .lista a::before { content: ""; width: 7px; height: 7px; background: var(--bordo); }
+  .redes .lista a::after { content: "↗"; font-size: 13px; }
+  .redes .lista a:hover { text-decoration: none; background: var(--bordo); color: var(--amarelo); }
+  .redes .lista a:hover::before { background: var(--amarelo); }
 
   /* VOLUME */
   .vol { position: fixed; right: 24px; bottom: 24px; z-index: 11; display: flex; flex-direction: column; align-items: center; gap: 8px; }
@@ -123,7 +131,10 @@
   .alto { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--bordo-3); background: var(--bordo-2); color: var(--creme); cursor: pointer; padding: 0; }
 
   @media (max-width: 700px) {
-    nav { padding: 0 16px; }
+    nav { padding: 0 16px; gap: 8px 16px; font-size: 13px; }
+    nav .logo { font-size: 15px; }
+    nav .links { gap: 8px 14px; }
+    .redes { margin-top: 12px; }
     .home-rodape { left: 16px; right: 16px; bottom: 88px; }
     .vol { right: 16px; bottom: 16px; }
     #disco, #duo, #contato { padding-left: 16px; padding-right: 16px; }
@@ -226,6 +237,28 @@
     <h2>Shows, imprensa e parcerias.</h2>
     <p>Quer levar o Bolimbolacho para um palco, projeto, ou curso? Entre em contato.</p>
     <span class="botoes"><a class="btn main" href="mailto:contato.bolimbolacho@gmail.com">contato.bolimbolacho@gmail.com <span aria-hidden="true">→</span></a></span>
+
+    <!-- REDES. Links marcados com BUSCA são provisórios: levam à busca por "bolimbolacho"
+         na plataforma até termos o link oficial. Instagram ainda sem link. -->
+    <div class="redes" id="redes">
+      <div class="grupo">
+        <span class="eyebrow" style="color:var(--bordo)"><span class="pix" style="background:var(--bordo)"></span>OUÇA</span>
+        <div class="lista">
+          <a href="https://open.spotify.com/album/3CzqTR2C7hkzuXa0KIyUif" target="_blank" rel="noopener">Spotify</a>
+          <a href="https://music.apple.com/br/search?term=bolimbolacho" target="_blank" rel="noopener">Apple Music</a><!-- BUSCA -->
+          <a href="https://www.deezer.com/search/bolimbolacho" target="_blank" rel="noopener">Deezer</a><!-- BUSCA -->
+          <a href="https://tidal.com/search?q=bolimbolacho" target="_blank" rel="noopener">Tidal</a><!-- BUSCA -->
+          <a href="https://bandcamp.com/search?q=bolimbolacho" target="_blank" rel="noopener">Bandcamp</a><!-- BUSCA -->
+        </div>
+      </div>
+      <div class="grupo">
+        <span class="eyebrow" style="color:var(--bordo)"><span class="pix" style="background:var(--bordo)"></span>SIGA</span>
+        <div class="lista">
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a><!-- FALTA O LINK -->
+          <a href="https://www.youtube.com/results?search_query=bolimbolacho" target="_blank" rel="noopener">YouTube</a><!-- BUSCA -->
+        </div>
+      </div>
+    </div>
   </div>
   <footer class="wrap">
     <span>© 2026 bolimbolacho</span>
