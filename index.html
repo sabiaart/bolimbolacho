@@ -51,7 +51,7 @@
 
   /* DISCO */
   /* tudo cabe em uma tela: à esquerda capa + texto e a ficha; à direita o player inteiro */
-  #disco { height: 100vh; min-height: 620px; padding: 80px 88px 32px 32px; overflow: hidden; }  /* 88px à direita: espaço do alto-falante */
+  #disco { height: 100vh; min-height: 620px; padding: 80px 32px 32px; overflow: hidden; }
   .disco-grid { height: 100%; max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr); gap: 48px; }
   .disco-esq { display: flex; flex-direction: column; justify-content: center; gap: 36px; min-height: 0; }
   .disco-topo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 28px; align-items: center; }
@@ -122,7 +122,7 @@
   .redes .lista a:hover::before { background: var(--amarelo); }
 
   /* VOLUME */
-  .vol { position: fixed; right: 24px; bottom: 24px; z-index: 11; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .vol { position: absolute; right: 24px; bottom: 24px; z-index: 11; display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .fader { display: none; flex-direction: column; align-items: center; gap: 10px; background: var(--bordo-2); border: 1px solid var(--bordo-3); border-radius: 16px; padding: 16px 10px 12px; }
   .vol:hover .fader, .vol:focus-within .fader { display: flex; }
   .fader label { font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--creme-2); }
@@ -175,6 +175,21 @@
       <span class="info" id="p-autor">Ricardo Cotrim</span>
       <span class="botoes"><a class="btn main" href="#disco">Ouvir o disco <span aria-hidden="true">↓</span></a></span>
     </div>
+  </div>
+  <!-- CONTROLE DE VOLUME: só na Home, onde o som acontece -->
+  <div class="vol">
+    <div class="fader">
+      <label for="vol">VOL</label>
+      <input id="vol" type="range" min="0" max="100" step="1" value="0">
+      <output id="vol-num" for="vol">0</output>
+    </div>
+    <button class="alto" id="alto" aria-label="Ligar o som">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 9h3l5-4v14l-5-4H4z"></path>
+        <path id="ondas" d="M15.5 9.5a3.5 3.5 0 0 1 0 5M18 7a7 7 0 0 1 0 10" style="display:none"></path>
+        <path id="mudo" d="M16 10l5 5M21 10l-5 5"></path>
+      </svg>
+    </button>
   </div>
 </section>
 
@@ -265,21 +280,6 @@
   </footer>
 </section>
 
-<!-- CONTROLE DE VOLUME -->
-<div class="vol">
-  <div class="fader">
-    <label for="vol">VOL</label>
-    <input id="vol" type="range" min="0" max="100" step="1" value="0">
-    <output id="vol-num" for="vol">0</output>
-  </div>
-  <button class="alto" id="alto" aria-label="Ligar o som">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M4 9h3l5-4v14l-5-4H4z"></path>
-      <path id="ondas" d="M15.5 9.5a3.5 3.5 0 0 1 0 5M18 7a7 7 0 0 1 0 10" style="display:none"></path>
-      <path id="mudo" d="M16 10l5 5M21 10l-5 5"></path>
-    </svg>
-  </button>
-</div>
 
 <script>
 // ---------- Conteúdo: as faixas do disco (x, y em % da tela; xm, ym = tela em pé, celular e tablet) ----------
@@ -553,7 +553,7 @@ function soltarDedo(e) {
   mouse.alvo = 0; sairDaGrade(); if (reduz) { mouse.a = 0; pedir(); }
 }
 inicio.addEventListener('pointerdown', e => {
-  if (!naArte(e)) return;
+  if (!naArte(e) || e.target.closest('.vol')) return;
   if (vol === 0 && !e.target.closest('a')) aplicarVol(ultimoVol || 70);
   moverPonteiro(e);
 });
