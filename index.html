@@ -111,6 +111,33 @@
   #contato p { margin: 0; font-size: 21px; max-width: 620px; }
   #contato .btn.main { background: var(--bordo); color: var(--creme); }
   #contato footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 12px; }
+
+  /* TECNOBARROCO: texto de Luís Filipe de Lima, em fundo creme como página impressa */
+  #texto { min-height: 100vh; padding: 120px 32px 96px; background: var(--creme); color: var(--bordo); }
+  #texto .eyebrow { color: var(--bordo); }
+  #texto .eyebrow .pix { background: var(--amarelo); outline: 1px solid var(--bordo); }
+  #texto .chamada { margin: 20px 0 64px; font-size: clamp(40px, 6.6vw, 100px); font-weight: 700; letter-spacing: -.04em; line-height: .95; max-width: 15ch; }
+  #texto .chamada em { font-style: normal; background: var(--amarelo); padding: 0 .08em; }
+  .artigo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr); gap: 32px 72px; align-items: start; }
+  .artigo aside { position: sticky; top: 96px; display: flex; flex-direction: column; gap: 28px; }
+  .artigo h3 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -.01em; line-height: 1.25; }
+  .artigo .assina { margin: 10px 0 0; font-size: 15px; color: #6B5258; }
+  .artigo .verso { margin: 0; padding: 20px 22px; background: var(--bordo); color: var(--creme); border-radius: 4px; }
+  .artigo .verso p { margin: 0; font-size: 20px; font-weight: 600; line-height: 1.3; }
+  .artigo .verso span { display: block; margin-top: 12px; font-size: 13px; color: var(--creme-2); line-height: 1.5; }
+  .artigo .corpo { max-width: 680px; }
+  .artigo .corpo p { margin: 0 0 1.2em; font-size: 19px; line-height: 1.7; }
+  .artigo .corpo p:first-child::first-letter { float: left; font-size: 4.2em; line-height: .82; font-weight: 700; margin: .06em .1em 0 0; }
+  @media (max-width: 900px) {
+    #texto { padding: 96px 16px 64px; }
+    #texto .chamada { margin-bottom: 40px; }
+    .artigo { grid-template-columns: 1fr; }
+    .artigo aside { position: static; }
+    .artigo .corpo p { font-size: 17px; }
+  }
+  /* faixa creme atrás do menu enquanto se lê o texto (evita o menu por cima das linhas) */
+  .faixa-topo { position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 9; background: var(--creme); opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .faixa-topo.on { opacity: 1; }
   /* REDES: onde ouvir e seguir */
   .redes { display: flex; flex-wrap: wrap; gap: 28px 56px; margin-top: 24px; padding-top: 28px; border-top: 1px solid rgba(36, 22, 26, .25); scroll-margin-top: 88px; }
   .redes .grupo { display: flex; flex-direction: column; gap: 12px; }
@@ -157,6 +184,7 @@
   <a class="logo" href="#inicio">bolimbolacho</a>
   <span class="links">
     <a href="#disco">Disco</a>
+    <a href="#texto">Tecnobarroco</a>
     <a href="#duo">Duo</a>
     <a href="#contato">Contato</a>
   </span>
@@ -227,7 +255,33 @@
   </div>
 </section>
 
-<!-- 3. O DUO -->
+<!-- 3. TECNOBARROCO: apresentação por Luís Filipe de Lima -->
+<div class="faixa-topo" aria-hidden="true"></div>
+<section id="texto">
+  <div class="wrap">
+    <span class="eyebrow"><span class="pix"></span>TECNOBARROCO · POR LUÍS FILIPE DE LIMA</span>
+    <p class="chamada">Bolimbolacho é o <em>tecnobarroco</em> brasileiro.</p>
+    <div class="artigo">
+      <aside>
+        <div>
+          <h3>É brasileiro, é tecnobarroco: bole em cima, bole em baixo!</h3>
+          <p class="assina">por Luís Filipe de Lima</p>
+        </div>
+        <blockquote class="verso">
+          <p>“Bolimbolacho, bole em cima, bole em baixo...”</p>
+          <span>A origem do nome: o verso de um lundu cantado nas ruas cariocas em fins do século XIX.</span>
+        </blockquote>
+      </aside>
+      <div class="corpo">
+        <p>Abram alas para o Bolimbolacho! É som que não acaba mais: uma animada comparsaria entre gêneros brasileiríssimos (samba, maxixe, bossa e outros mais) e o vasto universo da música eletrônica. É música para dançar e para prestar atenção. Música para o sorriso e para a contrição. Um som arcaico e futurista. Espontâneo e premeditado. Africano e europeu. Céu e Terra. Acridoce. Um som que traduz com fidelidade, talvez sem se dar conta disso, o espírito vigoroso plasmado na estética barroca, que se nutre de antinomias e contrastes profundos. Um barroco contemporâneo, digital, suingado e antropofágico, com toda pujança e o requinte da música seiscentista. Bolimbolacho é o tecnobarroco brasileiro.</p>
+        <p>O duo formado por Ricardo Cotrim e Pedro Tie, escoltado por mais quatro músicos (Lancaster, Tom Ashe, Pedro Pamplona e Julio Florindo), brilha em seu disco de estreia, <em>Circo de Cavalinhos</em>. As faixas passeiam por temas apoiados em ritmos brasileiros, com grande riqueza instrumental e timbrística. É um disco que garante novidades a cada audição: dá para descobrir camadas e mais camadas de som a cada volta no brinquedo, ruídos sutis, filigranas contrapontísticas, nuances de espacialidade, texturas sonoras. Outro trunfo do trabalho: pode-se apontar esta ou aquela influência na música do duo, mas nenhuma será capaz de ofuscar sua petulante originalidade.</p>
+        <p>Se o disco já oferece tamanho deleite, que dirá a performance ao vivo de Bolimbolacho. Promete tanto para o teatro, quanto para a pista. Por isso mesmo, o duo não poderia ter recebido melhor nome de batismo, cuja origem está no verso sacana de um lundu cantado nas ruas cariocas, em fins do século XIX: “Bolimbolacho, bole em cima, bole em baixo...”. Cerebralidade e tesão que se ligam aos extremos do espectro sonoro. É yin, é yang. É Carnaval, é missa solene. Com direito às cornucópias e volutas da arquitetura barroca. Por sua singularidade e consistência, sobretudo, este é um som que tem tudo para frutificar mais e mais, criar raízes e ganhar mundo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. O DUO -->
 <section id="duo">
   <div class="wrap">
     <span class="eyebrow"><span class="pix"></span>O DUO</span>
@@ -244,7 +298,7 @@
   </div>
 </section>
 
-<!-- 4. CONTATO -->
+<!-- 5. CONTATO -->
 <section id="contato">
   <div class="wrap meio">
     <span class="eyebrow" style="color:var(--bordo)"><span class="pix" style="background:var(--bordo)"></span>CONTATO</span>
@@ -575,6 +629,10 @@ function onda(i) {
 }
 botoes.forEach((b, i) => { b.addEventListener('mouseenter', () => onda(i)); b.addEventListener('focus', () => onda(i)); });
 medir(); onda(0); pedir();
+
+// faixa atrás do menu só enquanto o texto do Tecnobarroco passa por baixo dele
+new IntersectionObserver(([e]) => document.querySelector('.faixa-topo').classList.toggle('on', e.isIntersecting),
+  { rootMargin: '0px 0px -94% 0px' }).observe(document.getElementById('texto'));
 </script>
 </body>
 </html>
