@@ -140,6 +140,47 @@
   /* faixa creme atrás do menu enquanto se lê o texto (evita o menu por cima das linhas) */
   .faixa-topo { position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 9; background: var(--creme); opacity: 0; pointer-events: none; transition: opacity .25s; }
   .faixa-topo.on { opacity: 1; }
+
+  /* VÍDEOS: miniatura do YouTube; o vídeo só carrega quando a pessoa clica */
+  #videos { min-height: 100vh; padding: 104px 32px 64px; background: var(--bordo); }
+  #videos .cabeca { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px 32px; margin-bottom: 28px; }
+  #videos h2 { margin: 12px 0 0; font-size: clamp(44px, 6vw, 88px); }
+  .videos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; max-width: min(1180px, calc((100vh - 400px) * 16 / 9 + 24px)); }
+  .video { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .video .tela { position: relative; aspect-ratio: 16 / 9; border-radius: 4px; overflow: hidden; background: var(--bordo-2); }
+  .video .tela iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video button { all: unset; position: absolute; inset: 0; cursor: pointer; }
+  .video button img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s, filter .3s; filter: saturate(.9); }
+  .video button::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 55%, rgba(36, 22, 26, .55)); }
+  .video .play { position: absolute; z-index: 1; left: 16px; bottom: 16px; width: 52px; height: 52px; background: var(--amarelo); display: grid; place-items: center; transition: transform .2s; }
+  .video .play::before { content: ""; margin-left: 4px; border-left: 16px solid var(--bordo); border-top: 10px solid transparent; border-bottom: 10px solid transparent; }
+  .video button:hover img { transform: scale(1.03); filter: saturate(1.05); }
+  .video button:hover .play, .video button:focus-visible .play { transform: scale(1.08); }
+  .video button:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 3px; }
+  .video .legenda { display: flex; align-items: baseline; gap: 10px; font-size: 16px; font-weight: 600; }
+  .video .legenda span { font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--amarelo); }
+  @media (max-width: 700px) {
+    #videos { padding: 88px 16px 56px; }
+    .videos { grid-template-columns: 1fr; max-width: none; gap: 28px; }
+  }
+  /* celular estreito: o logo vira só o quadradinho, para o menu caber numa linha */
+  @media (max-width: 480px) {
+    nav a.logo { display: none; }   /* no celular estreito o menu ocupa a linha toda */
+    nav span.links { width: 100%; flex-wrap: nowrap; justify-content: space-between; gap: 8px; font-size: 12.5px; white-space: nowrap; }
+    /* no celular o botão mostra só o outro idioma (EN no site em português, PT no site em inglês) */
+    html[lang^="pt"] .lingua span[lang="pt"], html[lang="en"] .lingua span[lang="en"] { display: none; }
+    nav .lingua span { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+    .lingua { padding: 4px 0; }
+  }
+  /* IDIOMA: PT / EN no menu */
+  .lingua { all: unset; cursor: pointer; display: inline-flex; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; padding: 4px 0 4px 4px; }
+  .lingua span { opacity: .45; transition: opacity .2s; }
+  .lingua:hover span { opacity: .75; }
+  html[lang^="pt"] .lingua span[lang="pt"], html[lang="en"] .lingua span[lang="en"] { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+  .lingua:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
+  .nota-trad { display: none; margin: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #6B5258; }
+  html[lang="en"] .nota-trad { display: block; }
+  @media (max-width: 340px) { nav span.links { font-size: 11.5px; gap: 6px; } }
   /* REDES: onde ouvir e seguir */
   .redes { display: flex; flex-wrap: wrap; gap: 28px 56px; margin-top: 24px; padding-top: 28px; border-top: 1px solid rgba(36, 22, 26, .25); scroll-margin-top: 88px; }
   .redes .grupo { display: flex; flex-direction: column; gap: 12px; }
@@ -185,10 +226,12 @@
 <nav aria-label="Principal">
   <a class="logo" href="#inicio">bolimbolacho</a>
   <span class="links">
-    <a href="#disco">Disco</a>
-    <a href="#texto">Tecnobarroco</a>
+    <a href="#disco" data-en="Album">Disco</a>
+    <a href="#texto" data-en="Technobaroque">Tecnobarroco</a>
     <a href="#duo">Duo</a>
-    <a href="#contato">Contato</a>
+    <a href="#videos" data-en="Videos">Vídeos</a>
+    <a href="#contato" data-en="Contact">Contato</a>
+    <button class="lingua" id="lingua" type="button" aria-label="Mudar para inglês" data-en-aria-label="Switch to Portuguese"><span lang="pt">PT</span><span lang="en">EN</span></button>
   </span>
 </nav>
 
@@ -202,7 +245,7 @@
     <div class="painel" aria-live="polite">
       <span class="eyebrow"><span class="pix"></span><span id="p-num">FAIXA 1 · 5:24</span></span>
       <span class="faixa" id="p-nome">Bolimbolacho</span>
-      <span class="botoes"><a class="btn main" href="#disco">Ouvir o disco <span aria-hidden="true">↓</span></a></span>
+      <span class="botoes"><a class="btn main" href="#disco" data-en="Listen to the album &lt;span aria-hidden=&quot;true&quot;&gt;↓&lt;/span&gt;">Ouvir o disco <span aria-hidden="true">↓</span></a></span>
     </div>
   </div>
   <!-- CONTROLE DE VOLUME: só na Home, onde o som acontece -->
@@ -230,30 +273,30 @@
         <div class="capa-box">
           <div class="capa">
             <div class="cd"><img src="img/bolim-disco.jpg" alt=""></div>
-            <img src="img/bolim-capa.jpg" alt="Capa do disco Circo de Cavalinhos: um carrossel desenhado em tons de rosa, laranja e amarelo.">
+            <img src="img/bolim-capa.jpg" alt="Capa do disco Circo de Cavalinhos: um carrossel desenhado em tons de rosa, laranja e amarelo." data-en-alt="Cover of the album Circo de Cavalinhos: a carousel drawn in shades of pink, orange and yellow.">
           </div>
         </div>
         <div class="texto">
-          <span class="eyebrow"><span class="pix"></span>O DISCO · 2010</span>
+          <span class="eyebrow" data-en="&lt;span class=&quot;pix&quot;&gt;&lt;/span&gt;THE ALBUM · 2010"><span class="pix"></span>O DISCO · 2010</span>
           <h2>Circo de Cavalinhos</h2>
           <p class="manifesto">BOLE BOLE. MODO OPERANTE SONORO BULINOSO CONTÍNUO EM BAIXO CANTANTE.</p>
           <span class="botoes">
-            <a class="btn main" href="https://open.spotify.com/album/3CzqTR2C7hkzuXa0KIyUif" target="_blank" rel="noopener">Ouvir no Spotify <span aria-hidden="true">↗</span></a>
-            <a class="btn alt" href="#duo">Conheça o duo <span aria-hidden="true">↓</span></a>
+            <a class="btn main" href="https://open.spotify.com/album/3CzqTR2C7hkzuXa0KIyUif" target="_blank" rel="noopener" data-en="Listen on Spotify &lt;span aria-hidden=&quot;true&quot;&gt;↗&lt;/span&gt;">Ouvir no Spotify <span aria-hidden="true">↗</span></a>
+            <a class="btn alt" href="#duo" data-en="Meet the duo &lt;span aria-hidden=&quot;true&quot;&gt;↓&lt;/span&gt;">Conheça o duo <span aria-hidden="true">↓</span></a>
           </span>
         </div>
       </div>
       <div class="ficha">
-        <span class="eyebrow" style="padding-bottom:14px">FICHA TÉCNICA</span>
-        <div class="linha"><span>Produção e arranjos</span><span>Bolimbolacho</span></div>
-        <div class="linha"><span>Convidados</span><span>Lancaster (baixo), Tom Ashe (trompete), Pedro Pamplona (sax tenor), Julio Florindo (repique)</span></div>
-        <div class="linha"><span>Mixagem</span><span>Duda Mello, Estúdio Lobo Mau (RJ)</span></div>
-        <div class="linha"><span>Masterização</span><span>Luiz Tornaghi</span></div>
-        <div class="linha"><span>Projeto gráfico</span><span>Doria</span></div>
-        <div class="linha"><span>Selo</span><span>Bolacha Discos</span></div>
+        <span class="eyebrow" style="padding-bottom:14px" data-en="CREDITS">FICHA TÉCNICA</span>
+        <div class="linha"><span data-en="Production and arrangements">Produção e arranjos</span><span>Bolimbolacho</span></div>
+        <div class="linha"><span data-en="Guest musicians">Convidados</span><span data-en="Lancaster (bass), Tom Ashe (trumpet), Pedro Pamplona (tenor sax), Julio Florindo (repique)">Lancaster (baixo), Tom Ashe (trompete), Pedro Pamplona (sax tenor), Julio Florindo (repique)</span></div>
+        <div class="linha"><span data-en="Mixing">Mixagem</span><span>Duda Mello, Estúdio Lobo Mau (RJ)</span></div>
+        <div class="linha"><span data-en="Mastering">Masterização</span><span>Luiz Tornaghi</span></div>
+        <div class="linha"><span data-en="Graphic design">Projeto gráfico</span><span>Doria</span></div>
+        <div class="linha"><span data-en="Label">Selo</span><span>Bolacha Discos</span></div>
       </div>
     </div>
-    <iframe class="player" title="Circo de Cavalinhos no Spotify" src="https://open.spotify.com/embed/album/3CzqTR2C7hkzuXa0KIyUif?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    <iframe class="player" title="Circo de Cavalinhos no Spotify" data-en-title="Circo de Cavalinhos on Spotify" src="https://open.spotify.com/embed/album/3CzqTR2C7hkzuXa0KIyUif?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
   </div>
 </section>
 
@@ -261,22 +304,23 @@
 <div class="faixa-topo" aria-hidden="true"></div>
 <section id="texto">
   <div class="wrap">
-    <p class="chamada">Bolimbolacho é o <em>tecnobarroco</em> brasileiro.</p>
+    <p class="chamada" data-en="Bolimbolacho is Brazilian &lt;em&gt;technobaroque&lt;/em&gt;.">Bolimbolacho é o <em>tecnobarroco</em> brasileiro.</p>
     <div class="artigo">
       <aside>
+        <p class="nota-trad" lang="en">Translated from Portuguese.</p>
         <div>
-          <h3><span>É brasileiro, é tecnobarroco:</span><br><span>bole em cima, bole em baixo!</span></h3>
-          <p class="assina">por Luís Filipe de Lima</p>
+          <h3 data-en="&lt;span&gt;It&#x27;s Brazilian, it&#x27;s technobaroque:&lt;/span&gt;&lt;br&gt;&lt;span&gt;bole em cima, bole em baixo!&lt;/span&gt;"><span>É brasileiro, é tecnobarroco:</span><br><span>bole em cima, bole em baixo!</span></h3>
+          <p class="assina" data-en="by Luís Filipe de Lima">por Luís Filipe de Lima</p>
         </div>
         <blockquote class="verso">
           <p>“Bolimbolacho, bole em cima, bole em baixo...”</p>
-          <span>A origem do nome: o verso de um lundu cantado nas ruas cariocas em fins do século XIX.</span>
+          <span data-en="“It sways up top, it sways down below...” Where the name comes from: a line from a lundu sung in the streets of Rio de Janeiro in the late 19th century.">A origem do nome: o verso de um lundu cantado nas ruas cariocas em fins do século XIX.</span>
         </blockquote>
       </aside>
       <div class="corpo">
-        <p>Abram alas para o Bolimbolacho! É som que não acaba mais: uma animada comparsaria entre gêneros brasileiríssimos (samba, maxixe, bossa e outros mais) e o vasto universo da música eletrônica. É música para dançar e para prestar atenção. Música para o sorriso e para a contrição. Um som arcaico e futurista. Espontâneo e premeditado. Africano e europeu. Céu e Terra. Acridoce. Um som que traduz com fidelidade, talvez sem se dar conta disso, o espírito vigoroso plasmado na estética barroca, que se nutre de antinomias e contrastes profundos. Um barroco contemporâneo, digital, suingado e antropofágico, com toda pujança e o requinte da música seiscentista. Bolimbolacho é o tecnobarroco brasileiro.</p>
-        <p>O duo formado por Ricardo Cotrim e Pedro Tie, escoltado por mais quatro músicos (Lancaster, Tom Ashe, Pedro Pamplona e Julio Florindo), brilha em seu disco de estreia, <em>Circo de Cavalinhos</em>. As faixas passeiam por temas apoiados em ritmos brasileiros, com grande riqueza instrumental e timbrística. É um disco que garante novidades a cada audição: dá para descobrir camadas e mais camadas de som a cada volta no brinquedo, ruídos sutis, filigranas contrapontísticas, nuances de espacialidade, texturas sonoras. Outro trunfo do trabalho: pode-se apontar esta ou aquela influência na música do duo, mas nenhuma será capaz de ofuscar sua petulante originalidade.</p>
-        <p>Se o disco já oferece tamanho deleite, que dirá a performance ao vivo de Bolimbolacho. Promete tanto para o teatro, quanto para a pista. Por isso mesmo, o duo não poderia ter recebido melhor nome de batismo, cuja origem está no verso sacana de um lundu cantado nas ruas cariocas, em fins do século XIX: “Bolimbolacho, bole em cima, bole em baixo...”. Cerebralidade e tesão que se ligam aos extremos do espectro sonoro. É yin, é yang. É Carnaval, é missa solene. Com direito às cornucópias e volutas da arquitetura barroca. Por sua singularidade e consistência, sobretudo, este é um som que tem tudo para frutificar mais e mais, criar raízes e ganhar mundo.</p>
+        <p data-en="Make way for Bolimbolacho! It is a sound that never ends: a lively troupe of thoroughly Brazilian genres (samba, maxixe, bossa nova and more) joined by the vast universe of electronic music. It is music for dancing and for paying attention. Music for smiling and for contrition. A sound both archaic and futuristic. Spontaneous and premeditated. African and European. Heaven and Earth. Bittersweet. A sound that faithfully translates, perhaps without even realizing it, the vigorous spirit embodied in the Baroque aesthetic, which feeds on antinomies and deep contrasts. A contemporary Baroque: digital, swinging and anthropophagic, with all the power and refinement of seventeenth-century music. Bolimbolacho is Brazilian technobaroque.">Abram alas para o Bolimbolacho! É som que não acaba mais: uma animada comparsaria entre gêneros brasileiríssimos (samba, maxixe, bossa e outros mais) e o vasto universo da música eletrônica. É música para dançar e para prestar atenção. Música para o sorriso e para a contrição. Um som arcaico e futurista. Espontâneo e premeditado. Africano e europeu. Céu e Terra. Acridoce. Um som que traduz com fidelidade, talvez sem se dar conta disso, o espírito vigoroso plasmado na estética barroca, que se nutre de antinomias e contrastes profundos. Um barroco contemporâneo, digital, suingado e antropofágico, com toda pujança e o requinte da música seiscentista. Bolimbolacho é o tecnobarroco brasileiro.</p>
+        <p data-en="The duo formed by Ricardo Cotrim and Pedro Tie, escorted by four more musicians (Lancaster, Tom Ashe, Pedro Pamplona and Julio Florindo), shines on its debut album, &lt;em&gt;Circo de Cavalinhos&lt;/em&gt;. The tracks wander through themes built on Brazilian rhythms, with great instrumental and timbral richness. It is an album that offers something new with every listen: on each turn of the merry-go-round you discover layers upon layers of sound, subtle noises, contrapuntal filigree, nuances of space, sonic textures. Another of the record’s strengths: you can point to this or that influence in the duo’s music, but none of them can overshadow its brazen originality.">O duo formado por Ricardo Cotrim e Pedro Tie, escoltado por mais quatro músicos (Lancaster, Tom Ashe, Pedro Pamplona e Julio Florindo), brilha em seu disco de estreia, <em>Circo de Cavalinhos</em>. As faixas passeiam por temas apoiados em ritmos brasileiros, com grande riqueza instrumental e timbrística. É um disco que garante novidades a cada audição: dá para descobrir camadas e mais camadas de som a cada volta no brinquedo, ruídos sutis, filigranas contrapontísticas, nuances de espacialidade, texturas sonoras. Outro trunfo do trabalho: pode-se apontar esta ou aquela influência na música do duo, mas nenhuma será capaz de ofuscar sua petulante originalidade.</p>
+        <p data-en="If the album already offers such delight, imagine Bolimbolacho live. It promises as much for the theater as for the dance floor. Which is exactly why the duo could not have been given a better name, taken from a cheeky line of a lundu sung in the streets of Rio de Janeiro in the late nineteenth century: “Bolimbolacho, bole em cima, bole em baixo...” (“it sways up top, it sways down below...”). Intellect and desire wired to the far ends of the sound spectrum. It is yin, it is yang. It is Carnival, it is solemn Mass. Complete with the cornucopias and volutes of Baroque architecture. Above all, for its singularity and consistency, this is a sound with everything it takes to bear more and more fruit, put down roots and go out into the world.">Se o disco já oferece tamanho deleite, que dirá a performance ao vivo de Bolimbolacho. Promete tanto para o teatro, quanto para a pista. Por isso mesmo, o duo não poderia ter recebido melhor nome de batismo, cuja origem está no verso sacana de um lundu cantado nas ruas cariocas, em fins do século XIX: “Bolimbolacho, bole em cima, bole em baixo...”. Cerebralidade e tesão que se ligam aos extremos do espectro sonoro. É yin, é yang. É Carnaval, é missa solene. Com direito às cornucópias e volutas da arquitetura barroca. Por sua singularidade e consistência, sobretudo, este é um som que tem tudo para frutificar mais e mais, criar raízes e ganhar mundo.</p>
       </div>
     </div>
   </div>
@@ -285,33 +329,64 @@
 <!-- 4. O DUO -->
 <section id="duo">
   <div class="wrap">
-    <span class="eyebrow"><span class="pix"></span>O DUO</span>
+    <span class="eyebrow" data-en="&lt;span class=&quot;pix&quot;&gt;&lt;/span&gt;THE DUO"><span class="pix"></span>O DUO</span>
     <div class="duas" style="margin-top:20px; align-items:flex-end">
       <h2>bolimbolacho</h2>
       <div class="ficha">
-        <div class="linha"><span>Pedro Tie</span><span>piano Fender Rhodes, teclados, percussão e programações</span></div>
-        <div class="linha"><span>Ricardo Cotrim</span><span>clarinete, percussão e programações</span></div>
+        <div class="linha"><span>Pedro Tie</span><span data-en="Fender Rhodes piano, keyboards, percussion and programming">piano Fender Rhodes, teclados, percussão e programações</span></div>
+        <div class="linha"><span>Ricardo Cotrim</span><span data-en="clarinet, percussion and programming">clarinete, percussão e programações</span></div>
       </div>
     </div>
     <figure>
-      <img src="img/bolim-duo.jpg" alt="Ricardo Cotrim e Pedro Tie sentados lado a lado num banco de praça verde.">
+      <img src="img/bolim-duo.jpg" alt="Ricardo Cotrim e Pedro Tie sentados lado a lado num banco de praça verde." data-en-alt="Ricardo Cotrim and Pedro Tie sitting side by side on a green park bench.">
     </figure>
   </div>
 </section>
 
-<!-- 5. CONTATO -->
+<!-- 5. VÍDEOS (as fotos entram aqui depois) -->
+<section id="videos">
+  <div class="wrap">
+    <div class="cabeca">
+      <div>
+        <span class="eyebrow" data-en="&lt;span class=&quot;pix&quot;&gt;&lt;/span&gt;VIDEOS"><span class="pix"></span>VÍDEOS</span>
+        <h2 data-en="Videos">Vídeos</h2>
+      </div>
+      <a class="btn alt" href="https://www.youtube.com/@cnbolimbolacho" target="_blank" rel="noopener" data-en="YouTube channel &lt;span aria-hidden=&quot;true&quot;&gt;↗&lt;/span&gt;">Canal no YouTube <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="videos">
+      <figure class="video">
+        <div class="tela"><button data-id="YdMKTVGUr68" aria-label="Assistir Bolimbolacho" data-en-aria-label="Watch Bolimbolacho"><img src="https://i.ytimg.com/vi/YdMKTVGUr68/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/YdMKTVGUr68/hqdefault.jpg'" alt="" loading="lazy"><span class="play" aria-hidden="true"></span></button></div>
+        <figcaption class="legenda">Bolimbolacho</figcaption>
+      </figure>
+      <figure class="video">
+        <div class="tela"><button data-id="kOs_YeiXNnU" aria-label="Assistir Canjiquinha" data-en-aria-label="Watch Canjiquinha"><img src="https://i.ytimg.com/vi/kOs_YeiXNnU/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/kOs_YeiXNnU/hqdefault.jpg'" alt="" loading="lazy"><span class="play" aria-hidden="true"></span></button></div>
+        <figcaption class="legenda">Canjiquinha</figcaption>
+      </figure>
+      <figure class="video">
+        <div class="tela"><button data-id="NtxAtys7J_U" aria-label="Assistir Bole Box 1" data-en-aria-label="Watch Bole Box 1"><img src="https://i.ytimg.com/vi/NtxAtys7J_U/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/NtxAtys7J_U/hqdefault.jpg'" alt="" loading="lazy"><span class="play" aria-hidden="true"></span></button></div>
+        <figcaption class="legenda">Bole Box 1</figcaption>
+      </figure>
+      <figure class="video">
+        <div class="tela"><button data-id="NhUKvKLVM9A" aria-label="Assistir Bole Box 2" data-en-aria-label="Watch Bole Box 2"><img src="https://i.ytimg.com/vi/NhUKvKLVM9A/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/NhUKvKLVM9A/hqdefault.jpg'" alt="" loading="lazy"><span class="play" aria-hidden="true"></span></button></div>
+        <figcaption class="legenda">Bole Box 2</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 6. CONTATO -->
 <section id="contato">
   <div class="wrap meio">
-    <span class="eyebrow" style="color:var(--bordo)"><span class="pix" style="background:var(--bordo)"></span>CONTATO</span>
-    <h2>Shows, imprensa e parcerias.</h2>
-    <p>Quer levar o Bolimbolacho para um palco, projeto, ou curso? Entre em contato.</p>
+    <span class="eyebrow" style="color:var(--bordo)" data-en="&lt;span class=&quot;pix&quot; style=&quot;background:var(--bordo)&quot;&gt;&lt;/span&gt;CONTACT"><span class="pix" style="background:var(--bordo)"></span>CONTATO</span>
+    <h2 data-en="Shows, press and partnerships.">Shows, imprensa e parcerias.</h2>
+    <p data-en="Want to bring Bolimbolacho to a stage, a project or a workshop? Get in touch.">Quer levar o Bolimbolacho para um palco, projeto, ou curso? Entre em contato.</p>
     <span class="botoes"><a class="btn main" href="mailto:contato.bolimbolacho@gmail.com">contato.bolimbolacho@gmail.com <span aria-hidden="true">→</span></a></span>
 
     <!-- REDES. Links marcados com BUSCA são provisórios: levam à busca por "bolimbolacho"
          na plataforma até termos o link oficial. Instagram ainda sem link. -->
     <div class="redes" id="redes">
       <div class="grupo">
-        <span class="eyebrow" style="color:var(--bordo)"><span class="pix" style="background:var(--bordo)"></span>OUÇA</span>
+        <span class="eyebrow" style="color:var(--bordo)" data-en="&lt;span class=&quot;pix&quot; style=&quot;background:var(--bordo)&quot;&gt;&lt;/span&gt;LISTEN"><span class="pix" style="background:var(--bordo)"></span>OUÇA</span>
         <div class="lista">
           <a href="https://open.spotify.com/album/3CzqTR2C7hkzuXa0KIyUif" target="_blank" rel="noopener">Spotify</a>
           <a href="https://music.apple.com/br/search?term=bolimbolacho" target="_blank" rel="noopener">Apple Music</a><!-- BUSCA -->
@@ -321,10 +396,10 @@
         </div>
       </div>
       <div class="grupo">
-        <span class="eyebrow" style="color:var(--bordo)"><span class="pix" style="background:var(--bordo)"></span>SIGA</span>
+        <span class="eyebrow" style="color:var(--bordo)" data-en="&lt;span class=&quot;pix&quot; style=&quot;background:var(--bordo)&quot;&gt;&lt;/span&gt;FOLLOW"><span class="pix" style="background:var(--bordo)"></span>SIGA</span>
         <div class="lista">
           <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a><!-- FALTA O LINK -->
-          <a href="https://www.youtube.com/results?search_query=bolimbolacho" target="_blank" rel="noopener">YouTube</a><!-- BUSCA -->
+          <a href="https://www.youtube.com/@cnbolimbolacho" target="_blank" rel="noopener">YouTube</a>
         </div>
       </div>
     </div>
@@ -336,6 +411,40 @@
 
 
 <script>
+// ---------- Idioma (português / inglês) ----------
+// Em país de língua portuguesa (pelo fuso horário) ou com o navegador em português, abre em PT; senão, em EN.
+// A escolha feita no botão PT/EN fica guardada neste navegador.
+const FUSOS_PT = /^(America\/(Sao_Paulo|Fortaleza|Recife|Bahia|Belem|Maceio|Araguaina|Santarem|Noronha|Manaus|Cuiaba|Campo_Grande|Porto_Velho|Boa_Vista|Rio_Branco|Eirunepe)|Europe\/Lisbon|Atlantic\/(Madeira|Azores|Cape_Verde)|Africa\/(Luanda|Maputo|Bissau|Sao_Tome)|Asia\/(Dili|Macau))$/;
+function idiomaInicial() {
+  try { const salvo = localStorage.getItem('bolim-idioma'); if (salvo === 'pt' || salvo === 'en') return salvo; } catch (e) {}
+  let fuso = ''; try { fuso = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+  const langs = navigator.languages || [navigator.language || ''];
+  return FUSOS_PT.test(fuso) || langs.some(l => /^pt\b/i.test(l)) ? 'pt' : 'en';
+}
+let idioma = idiomaInicial();
+const T = (pt, en) => idioma === 'en' ? en : pt;
+const ATRIBUTOS = ['alt', 'title', 'aria-label'];
+function aplicarIdioma(l) {
+  idioma = l;
+  document.documentElement.lang = l === 'en' ? 'en' : 'pt-BR';
+  document.querySelectorAll('[data-en]').forEach(el => {
+    if (el.dataset.pt === undefined) el.dataset.pt = el.innerHTML;
+    el.innerHTML = l === 'en' ? el.dataset.en : el.dataset.pt;
+  });
+  ATRIBUTOS.forEach(a => document.querySelectorAll(`[data-en-${a}]`).forEach(el => {
+    const k = 'pt' + a.replace(/-./g, m => m[1].toUpperCase()).replace(/^./, c => c.toUpperCase());
+    if (el.dataset[k] === undefined) el.dataset[k] = el.getAttribute(a) || '';
+    el.setAttribute(a, l === 'en' ? el.getAttribute(`data-en-${a}`) : el.dataset[k]);
+  }));
+  try { atualizarTextosDinamicos(); } catch (e) { /* ainda carregando: roda no fim do script */ }
+}
+document.getElementById('lingua').addEventListener('click', () => {
+  const novo = idioma === 'en' ? 'pt' : 'en';
+  try { localStorage.setItem('bolim-idioma', novo); } catch (e) {}
+  aplicarIdioma(novo);
+});
+if (idioma === 'en') aplicarIdioma('en');
+
 // ---------- Conteúdo: as faixas do disco (x, y em % da tela; xm, ym = tela em pé, celular e tablet) ----------
 const FAIXAS = [
   { n: 1, nome: 'Bolimbolacho',  dur: '5:24', autor: 'Ricardo Cotrim',            x: 18, y: 26, xm: 20, ym: 14, f: 130.81 },
@@ -384,7 +493,7 @@ function aplicarVol(v) {
   document.getElementById('vol-num').textContent = v;
   document.getElementById('ondas').style.display = v > 0 ? '' : 'none';
   document.getElementById('mudo').style.display = v > 0 ? 'none' : '';
-  document.getElementById('alto').setAttribute('aria-label', v > 0 ? 'Silenciar o som' : 'Ligar o som');
+  document.getElementById('alto').setAttribute('aria-label', v > 0 ? T('Silenciar o som', 'Mute') : T('Ligar o som', 'Turn sound on'));
 }
 function tocar(f) {
   if (!vol) return;
@@ -485,13 +594,13 @@ let atual = 0;
 const botoes = FAIXAS.map((fx, i) => {
   const b = document.createElement('button');
   b.className = 'ponto' + (i === 0 ? ' on' : '');
-  b.setAttribute('aria-label', `Faixa ${fx.n}: ${fx.nome}. Ir para o disco`);
+  b.setAttribute('aria-label', T(`Faixa ${fx.n}: ${fx.nome}. Ir para o disco`, `Track ${fx.n}: ${fx.nome}. Go to the album`));
   b.innerHTML = '<span class="halo"><span class="q"></span></span><span class="nome"></span>';
   b.querySelector('.nome').textContent = fx.nome;
   const escolher = () => {
     if (atual === i) return;
     botoes[atual].classList.remove('on'); b.classList.add('on'); atual = i;
-    document.getElementById('p-num').textContent = `FAIXA ${fx.n} · ${fx.dur}`;
+    document.getElementById('p-num').textContent = `${T('FAIXA', 'TRACK')} ${fx.n} · ${fx.dur}`;
     document.getElementById('p-nome').textContent = fx.nome;
     tocar(fx.f);
   };
@@ -664,6 +773,25 @@ medir(); onda(0); pedir();
 // faixa atrás do menu só enquanto o texto do Tecnobarroco passa por baixo dele
 new IntersectionObserver(([e]) => document.querySelector('.faixa-topo').classList.toggle('on', e.isIntersecting),
   { rootMargin: '0px 0px -94% 0px' }).observe(document.getElementById('texto'));
+
+// vídeos: troca a miniatura pelo player do YouTube só no clique (página mais leve, sem rastreio antes)
+document.querySelectorAll('.video button').forEach(b => b.addEventListener('click', () => {
+  const f = document.createElement('iframe');
+  f.src = `https://www.youtube-nocookie.com/embed/${b.dataset.id}?autoplay=1&rel=0`;
+  f.title = b.getAttribute('aria-label');
+  f.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
+  f.allowFullscreen = true;
+  b.replaceWith(f);
+}));
+
+// textos criados pelo script, refeitos quando o idioma muda
+function atualizarTextosDinamicos() {
+  const fx = FAIXAS[atual];
+  document.getElementById('p-num').textContent = `${T('FAIXA', 'TRACK')} ${fx.n} · ${fx.dur}`;
+  botoes.forEach((b, i) => b.setAttribute('aria-label', T(`Faixa ${FAIXAS[i].n}: ${FAIXAS[i].nome}. Ir para o disco`, `Track ${FAIXAS[i].n}: ${FAIXAS[i].nome}. Go to the album`)));
+  document.getElementById('alto').setAttribute('aria-label', vol > 0 ? T('Silenciar o som', 'Mute') : T('Ligar o som', 'Turn sound on'));
+}
+atualizarTextosDinamicos();
 </script>
 </body>
 </html>
