@@ -29,7 +29,7 @@
   /* NAV */
   nav { position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 28px; min-height: 56px; padding: 0 32px; font-size: 14px; color: #fff; mix-blend-mode: difference; }
   nav .logo { font-weight: 700; letter-spacing: -.01em; font-size: 17px; }
-  nav .links { display: flex; flex-wrap: wrap; gap: 8px 28px; }
+  nav .links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; }
 
   /* HOME */
   #inicio { height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; background: var(--bordo); }
@@ -165,13 +165,24 @@
   }
   /* celular estreito: o logo vira só o quadradinho, para o menu caber numa linha */
   @media (max-width: 480px) {
-    nav a.logo { display: none; }   /* no celular estreito o menu ocupa a linha toda */
-    nav span.links { width: 100%; flex-wrap: nowrap; justify-content: space-between; gap: 8px; font-size: 12.5px; white-space: nowrap; }
+    nav span.links { flex-wrap: nowrap; gap: 16px; white-space: nowrap; }
     /* no celular o botão mostra só o outro idioma (EN no site em português, PT no site em inglês) */
     html[lang^="pt"] .lingua span[lang="pt"], html[lang="en"] .lingua span[lang="en"] { display: none; }
     nav .lingua span { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
     .lingua { padding: 4px 0; }
   }
+  /* SOBRE: botão no menu + submenu com Duo, Tecnobarroco e Vídeos */
+  .sobre { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .sobre .seta { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid currentColor; transition: transform .2s; }
+  .sobre[aria-expanded="true"] .seta { transform: rotate(180deg); }
+  .sobre:focus-visible { outline: 1px solid currentColor; outline-offset: 3px; }
+  .submenu { position: fixed; z-index: 12; top: 48px; min-width: 190px; padding: 8px; display: flex; flex-direction: column;
+             background: var(--bordo); border: 1px solid rgba(255, 244, 230, .16); border-radius: 10px; box-shadow: 0 12px 32px rgba(0, 0, 0, .35); }
+  .submenu[hidden] { display: none; }
+  .submenu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px; color: var(--creme); font-size: 15px; }
+  .submenu a::before { content: ""; width: 7px; height: 7px; background: var(--creme-2); transition: background .2s; }
+  .submenu a:hover, .submenu a:focus-visible { background: var(--bordo-3); text-decoration: none; outline: none; }
+  .submenu a:hover::before, .submenu a:focus-visible::before { background: var(--amarelo); }
   /* IDIOMA: PT / EN no menu */
   .lingua { all: unset; cursor: pointer; display: inline-flex; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; padding: 4px 0 4px 4px; }
   .lingua span { opacity: .45; transition: opacity .2s; }
@@ -227,13 +238,17 @@
   <a class="logo" href="#inicio">bolimbolacho</a>
   <span class="links">
     <a href="#disco" data-en="Album">Disco</a>
-    <a href="#texto" data-en="Technobaroque">Tecnobarroco</a>
-    <a href="#duo">Duo</a>
-    <a href="#videos" data-en="Videos">Vídeos</a>
+    <button class="sobre" id="sobre-btn" type="button" aria-expanded="false" aria-controls="submenu" data-en="About <span class=&quot;seta&quot; aria-hidden=&quot;true&quot;></span>">Sobre <span class="seta" aria-hidden="true"></span></button>
     <a href="#contato" data-en="Contact">Contato</a>
     <button class="lingua" id="lingua" type="button" aria-label="Mudar para inglês" data-en-aria-label="Switch to Portuguese"><span lang="pt">PT</span><span lang="en">EN</span></button>
   </span>
 </nav>
+<!-- submenu de "Sobre": fica fora do <nav> para não herdar a inversão de cor do menu -->
+<div class="submenu" id="submenu" hidden>
+  <a href="#duo">Duo</a>
+  <a href="#texto" data-en="Technobaroque">Tecnobarroco</a>
+  <a href="#videos" data-en="Videos">Vídeos</a>
+</div>
 
 <!-- 1. HOME: arte interativa. Cada quadrado é uma faixa do disco. -->
 <section id="inicio">
@@ -792,6 +807,30 @@ function atualizarTextosDinamicos() {
   document.getElementById('alto').setAttribute('aria-label', vol > 0 ? T('Silenciar o som', 'Mute') : T('Ligar o som', 'Turn sound on'));
 }
 atualizarTextosDinamicos();
+
+// ---------- Submenu "Sobre" ----------
+// abre ao passar o mouse (computador) ou ao tocar (celular); fecha ao sair, ao escolher, com Esc ou tocando fora
+(() => {
+  const btn = document.getElementById('sobre-btn'), menu = document.getElementById('submenu');
+  let fechar = null;
+  const posicionar = () => {
+    const r = btn.getBoundingClientRect();
+    menu.style.left = Math.max(8, Math.min(r.left - 12, innerWidth - menu.offsetWidth - 8)) + 'px';
+    menu.style.top = (r.bottom + 10) + 'px';
+  };
+  const abrir = () => { clearTimeout(fechar); if (!menu.hidden) return; menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); posicionar(); };
+  const sair = (ja) => { clearTimeout(fechar); const f = () => { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); }; ja ? f() : (fechar = setTimeout(f, 220)); };
+  btn.addEventListener('click', () => menu.hidden ? abrir() : sair(true));
+  [btn, menu].forEach(el => {
+    el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') abrir(); });
+    el.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') sair(); });
+  });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { sair(true); sairDaGrade(); }));
+  document.addEventListener('pointerdown', e => { if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) sair(true); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { sair(true); btn.focus(); } });
+  addEventListener('resize', () => { if (!menu.hidden) posicionar(); });
+  addEventListener('scroll', () => { if (!menu.hidden) sair(true); }, { passive: true });
+})();
 </script>
 </body>
 </html>
