@@ -142,10 +142,23 @@
   .faixa-topo.on { opacity: 1; }
 
   /* VÍDEOS: miniatura do YouTube; o vídeo só carrega quando a pessoa clica */
-  #videos { min-height: 100vh; padding: 104px 32px 64px; background: var(--bordo); }
+  #videos { min-height: 100vh; padding: 104px 32px 64px; background: var(--bordo); display: flex; flex-direction: column; justify-content: center; }
+  #videos .wrap { width: 100%; }
   #videos .cabeca { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px 32px; margin-bottom: 28px; }
   #videos h2 { margin: 12px 0 0; font-size: clamp(44px, 6vw, 88px); }
-  .videos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; max-width: min(1180px, calc((100vh - 400px) * 16 / 9 + 24px)); }
+  .videos { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 48px) / 3); gap: 24px;
+            overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; overscroll-behavior-x: contain;
+            padding-bottom: 14px; scrollbar-width: thin; scrollbar-color: var(--bordo-3) transparent; }
+  .videos::-webkit-scrollbar { height: 6px; }
+  .videos::-webkit-scrollbar-thumb { background: var(--bordo-3); border-radius: 3px; }
+  .videos .video { scroll-snap-align: start; }
+  .setas { display: flex; gap: 8px; }
+  .setas[hidden] { display: none; }
+  .seta-v { all: unset; cursor: pointer; width: 42px; height: 42px; display: grid; place-items: center; border: 1.5px solid var(--creme-2); border-radius: 50%; color: var(--creme); font-size: 18px; transition: background .2s, opacity .2s; }
+  .seta-v:hover { background: var(--bordo-3); }
+  .seta-v:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 3px; }
+  .seta-v:disabled { opacity: .3; cursor: default; background: none; }
+  #videos .acoes { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
   .video { margin: 0; display: flex; flex-direction: column; gap: 10px; }
   .video .tela { position: relative; aspect-ratio: 16 / 9; border-radius: 4px; overflow: hidden; background: var(--bordo-2); }
   .video .tela iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
@@ -161,7 +174,7 @@
   .video .legenda span { font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--amarelo); }
   @media (max-width: 700px) {
     #videos { padding: 88px 16px 56px; }
-    .videos { grid-template-columns: 1fr; max-width: none; gap: 28px; }
+    .videos { grid-auto-columns: 86%; gap: 16px; }
   }
   /* celular estreito: o logo vira só o quadradinho, para o menu caber numa linha */
   @media (max-width: 480px) {
@@ -207,7 +220,8 @@
   .fader { display: none; flex-direction: column; align-items: center; gap: 10px; background: var(--bordo-2); border: 1px solid var(--bordo-3); border-radius: 16px; padding: 16px 10px 12px; }
   .vol:hover .fader, .vol:focus-within .fader { display: flex; }
   .fader label { font-size: 11px; font-weight: 600; letter-spacing: .08em; color: var(--creme-2); }
-  .fader input { writing-mode: vertical-lr; direction: rtl; width: 28px; height: 140px; margin: 0; accent-color: var(--amarelo); cursor: pointer; }
+  .fader .trilho { position: relative; width: 28px; height: 140px; }
+  .fader input { position: absolute; left: 50%; top: 50%; width: 140px; height: 28px; margin: 0; transform: translate(-50%, -50%) rotate(-90deg); accent-color: var(--amarelo); cursor: pointer; }   /* em pé: baixo = 0, cima = 100 */
   .fader output { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--creme-2); }
   .alto { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--bordo-3); background: var(--bordo-2); color: var(--creme); cursor: pointer; padding: 0; }
 
@@ -267,7 +281,7 @@
   <div class="vol">
     <div class="fader">
       <label for="vol">VOL</label>
-      <input id="vol" type="range" min="0" max="100" step="1" value="0">
+      <span class="trilho"><input id="vol" type="range" min="0" max="100" step="1" value="0" aria-orientation="vertical"></span>
       <output id="vol-num" for="vol">0</output>
     </div>
     <button class="alto" id="alto" aria-label="Ligar o som">
@@ -366,7 +380,13 @@
         <span class="eyebrow" data-en="&lt;span class=&quot;pix&quot;&gt;&lt;/span&gt;VIDEOS"><span class="pix"></span>VÍDEOS</span>
         <h2 data-en="Videos">Vídeos</h2>
       </div>
-      <a class="btn alt" href="https://www.youtube.com/@cnbolimbolacho" target="_blank" rel="noopener" data-en="YouTube channel &lt;span aria-hidden=&quot;true&quot;&gt;↗&lt;/span&gt;">Canal no YouTube <span aria-hidden="true">↗</span></a>
+      <div class="acoes">
+        <span class="setas" id="setas-v" hidden>
+          <button class="seta-v" type="button" data-dir="-1" aria-label="Vídeos anteriores" data-en-aria-label="Previous videos">←</button>
+          <button class="seta-v" type="button" data-dir="1" aria-label="Próximos vídeos" data-en-aria-label="Next videos">→</button>
+        </span>
+        <a class="btn alt" href="https://www.youtube.com/@cnbolimbolacho" target="_blank" rel="noopener" data-en="YouTube channel &lt;span aria-hidden=&quot;true&quot;&gt;↗&lt;/span&gt;">Canal no YouTube <span aria-hidden="true">↗</span></a>
+      </div>
     </div>
     <div class="videos">
       <figure class="video">
@@ -397,23 +417,20 @@
     <p data-en="Want to bring Bolimbolacho to a stage, a project or a workshop? Get in touch.">Quer levar o Bolimbolacho para um palco, projeto, ou curso? Entre em contato.</p>
     <span class="botoes"><a class="btn main" href="mailto:contato.bolimbolacho@gmail.com">contato.bolimbolacho@gmail.com <span aria-hidden="true">→</span></a></span>
 
-    <!-- REDES. Links marcados com BUSCA são provisórios: levam à busca por "bolimbolacho"
-         na plataforma até termos o link oficial. Instagram ainda sem link. -->
+    <!-- REDES. Bandcamp e Instagram entram quando o duo tiver os perfis. -->
     <div class="redes" id="redes">
       <div class="grupo">
         <span class="eyebrow" style="color:var(--bordo)" data-en="&lt;span class=&quot;pix&quot; style=&quot;background:var(--bordo)&quot;&gt;&lt;/span&gt;LISTEN"><span class="pix" style="background:var(--bordo)"></span>OUÇA</span>
         <div class="lista">
           <a href="https://open.spotify.com/album/3CzqTR2C7hkzuXa0KIyUif" target="_blank" rel="noopener">Spotify</a>
-          <a href="https://music.apple.com/br/search?term=bolimbolacho" target="_blank" rel="noopener">Apple Music</a><!-- BUSCA -->
-          <a href="https://www.deezer.com/search/bolimbolacho" target="_blank" rel="noopener">Deezer</a><!-- BUSCA -->
-          <a href="https://tidal.com/search?q=bolimbolacho" target="_blank" rel="noopener">Tidal</a><!-- BUSCA -->
-          <a href="https://bandcamp.com/search?q=bolimbolacho" target="_blank" rel="noopener">Bandcamp</a><!-- BUSCA -->
+          <a href="https://music.apple.com/br/artist/bolimbolacho/1786919353" target="_blank" rel="noopener">Apple Music</a>
+          <a href="https://www.deezer.com/artist/294946191" target="_blank" rel="noopener">Deezer</a>
+          <a href="https://tidal.com/artist/52763465" target="_blank" rel="noopener">Tidal</a>
         </div>
       </div>
       <div class="grupo">
         <span class="eyebrow" style="color:var(--bordo)" data-en="&lt;span class=&quot;pix&quot; style=&quot;background:var(--bordo)&quot;&gt;&lt;/span&gt;FOLLOW"><span class="pix" style="background:var(--bordo)"></span>SIGA</span>
         <div class="lista">
-          <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a><!-- FALTA O LINK -->
           <a href="https://www.youtube.com/@cnbolimbolacho" target="_blank" rel="noopener">YouTube</a>
         </div>
       </div>
@@ -830,6 +847,21 @@ atualizarTextosDinamicos();
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { sair(true); btn.focus(); } });
   addEventListener('resize', () => { if (!menu.hidden) posicionar(); });
   addEventListener('scroll', () => { if (!menu.hidden) sair(true); }, { passive: true });
+})();
+
+// faixa de vídeos: as setas só aparecem quando há mais vídeos do que cabem na largura
+(() => {
+  const faixa = document.querySelector('.videos'), setas = document.getElementById('setas-v');
+  const [ant, prox] = setas.querySelectorAll('button');
+  const passo = () => { const v = faixa.querySelector('.video'); return v ? v.offsetWidth + 24 : faixa.clientWidth; };
+  const atualizar = () => {
+    const sobra = faixa.scrollWidth - faixa.clientWidth;
+    setas.hidden = sobra < 4;
+    ant.disabled = faixa.scrollLeft < 4; prox.disabled = faixa.scrollLeft > sobra - 4;
+  };
+  setas.addEventListener('click', e => { const b = e.target.closest('button'); if (b) faixa.scrollBy({ left: passo() * +b.dataset.dir }); });
+  faixa.addEventListener('scroll', atualizar, { passive: true });
+  addEventListener('resize', atualizar); atualizar();
 })();
 </script>
 </body>
